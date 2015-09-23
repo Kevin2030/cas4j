@@ -19,45 +19,33 @@
     under the License.
 
 -->
-<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:context="http://www.springframework.org/schema/context"
-       xmlns:p="http://www.springframework.org/schema/p"
-       xmlns:c="http://www.springframework.org/schema/c"
-       xmlns:util="http://www.springframework.org/schema/util"
-       xmlns="http://www.springframework.org/schema/beans"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:c="http://www.springframework.org/schema/c" xmlns:util="http://www.springframework.org/schema/util" xmlns="http://www.springframework.org/schema/beans"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
        					   http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
-       					   http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd"> 
-    <description>
-        Configuration for the default TicketRegistry which stores the tickets in-memory and cleans them out as specified
-        intervals.
-    </description>
-    
-    <context:property-placeholder location="classpath:/ticket.properties" ignore-unresolvable="true" />
+       					   http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd"
+>
+	<description>
+		Configuration for the default TicketRegistry which stores the tickets in-memory and cleans them out as specified
+		intervals.
+	</description>
+
+	<context:property-placeholder location="classpath:/ticket.properties" ignore-unresolvable="true" />
 
     <!-- Ticket Registry -->
     <!-- <bean id="ticketRegistry" class="org.jasig.cas.ticket.registry.DefaultTicketRegistry"/> -->
-    <bean id="ticketRegistry"
-          class="org.jasig.cas.ticket.registry.MemCacheTicketRegistry"
-          c:client-ref="memcachedClient"
-          c:ticketGrantingTicketTimeOut="28800"
-          c:serviceTicketTimeOut="7200" />
+	<bean id="ticketRegistry" class="org.jasig.cas.ticket.registry.MemCacheTicketRegistry" c:client-ref="memcachedClient"
+		c:ticketGrantingTicketTimeOut="28800" c:serviceTicketTimeOut="7200" />
 
-    <bean id="memcachedClient" class="net.spy.memcached.spring.MemcachedClientFactoryBean"
-          p:servers="192.168.253.128:11211"
-          p:protocol="BINARY"
-          p:locatorType="ARRAY_MOD"
-          p:failureMode="Redistribute"
-          p:transcoder-ref="kryoTranscoder">
-        <property name="hashAlg">
-            <util:constant static-field="net.spy.memcached.DefaultHashAlgorithm.FNV1_64_HASH" />
-        </property>
-    </bean>
+	<bean id="memcachedClient" class="net.spy.memcached.spring.MemcachedClientFactoryBean" p:servers="192.168.253.128:11211" p:protocol="BINARY"
+		p:locatorType="ARRAY_MOD" p:failureMode="Redistribute" p:transcoder-ref="kryoTranscoder"
+	>
+		<property name="hashAlg">
+			<util:constant static-field="net.spy.memcached.DefaultHashAlgorithm.FNV1_64_HASH" />
+		</property>
+	</bean>
 
-    <bean id="kryoTranscoder"
-          class="org.jasig.cas.ticket.registry.support.kryo.KryoTranscoder"
-          init-method="initialize"
-          c:initialBufferSize="8192" />
+	<bean id="kryoTranscoder" class="org.jasig.cas.ticket.registry.support.kryo.KryoTranscoder" init-method="initialize" c:initialBufferSize="8192" />
 
     <!--Quartz -->
     <!-- TICKET REGISTRY CLEANER -->
@@ -76,5 +64,5 @@
           p:jobDetail-ref="jobDetailTicketRegistryCleaner"
           p:startDelay="20000"
           p:repeatInterval="5000000"/>
-      -->     
+      -->
 </beans>
