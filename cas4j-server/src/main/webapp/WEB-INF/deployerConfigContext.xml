@@ -34,6 +34,7 @@
 +-->
 
 <beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:context="http://www.springframework.org/schema/context"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:p="http://www.springframework.org/schema/p"
        xmlns:c="http://www.springframework.org/schema/c"
@@ -43,8 +44,10 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
        http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
 
+	<context:property-placeholder location="classpath:/database.properties" ignore-unresolvable="true" />
     <!--
        | The authentication manager defines security policy for authentication by specifying at a minimum
        | the authentication handlers that will be used to authenticate credential. While the AuthenticationManager
@@ -102,6 +105,7 @@
        | * org.jasig.cas.adaptors.x509.authentication.handler.support.X509CredentialsAuthenticationHandler
        | * org.jasig.cas.support.spnego.authentication.handler.support.JCIFSSpnegoAuthenticationHandler
        -->
+    <!--    
     <bean id="primaryAuthenticationHandler"
           class="org.jasig.cas.authentication.AcceptUsersAuthenticationHandler">
         <property name="users">
@@ -110,6 +114,42 @@
             </map>
         </property>
     </bean>
+     -->
+     <bean id="primaryAuthenticationHandler" class="com.kingdee.internet.finance.authentication.handler.CustomQueryDatabaseAuthenticationHandler">
+    	<property name="dataSource" ref="dataSource" />
+  		<property name="sql" value="select fpassword from t_bs_user where lower(fnumber)=lower(?)" />
+  		<property name="userNamePasswordEncoder" ref="MD5UserNamePasswordEncoder" />
+    </bean>
+
+	<bean id="MD5UserNamePasswordEncoder" class="com.kingdee.internet.finance.authentication.handler.DefaultUserNamePasswordEncoder">
+		<constructor-arg index="0" value="MD5" />
+	</bean>
+
+	<bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close">
+		<property name="url" value="jdbc:oracle:thin:@172.20.10.48:1521:TESTIFIN" />
+		<property name="username" value="yskdb" />
+		<property name="password" value="NmaQNStcuZffr5kTlpGnAUtRqV7NGvdOZJ2ENevbfnwHZIPNgzztDW2Zx1AdcZY2kBAtLyGi9MsG5PIkfr0Kpw==" />
+		<property name="filters" value="config" />
+		<property name="proxyFilters">
+			<list>
+				<ref bean="wall-filter" />
+			</list>
+		</property>
+		<property name="initialSize" value="1" />
+		<property name="minIdle" value="1" />
+		<property name="maxActive" value="20" />
+		<property name="connectionProperties" value="config.decrypt=true" />
+	</bean>
+
+	<bean id="wall-filter-config" class="com.alibaba.druid.wall.WallConfig" init-method="init">
+		<property name="dir" value="META-INF/druid/wall/oracle" />
+	</bean>
+
+	<bean id="wall-filter" class="com.alibaba.druid.wall.WallFilter">
+		<property name="dbType" value="oracle" />
+		<property name="config" ref="wall-filter-config" />
+	</bean>
+    
 
     <!-- Required for proxy ticket mechanism -->
     <bean id="proxyPrincipalResolver"
