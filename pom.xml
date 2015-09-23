@@ -823,6 +823,12 @@
 				<artifactId>hazelcast</artifactId>
 				<version>${hazelcast.version}</version>
 			</dependency>
+			
+			<dependency>
+				<groupId>com.alibaba</groupId>
+				<artifactId>druid</artifactId>
+				<version>${druid-version}</version>
+			</dependency>
 
 			<!-- CAS -->
 			<dependency>
@@ -1009,6 +1015,7 @@
 		<bouncycastle.version>1.51</bouncycastle.version>
 		<dbcp.version>2.1</dbcp.version>
 		<hazelcast.version>3.5</hazelcast.version>
+		<druid-version>1.0.15</druid-version>
 
 		<!-- Project configuration -->
 		<project.build.sourceVersion>1.7</project.build.sourceVersion>

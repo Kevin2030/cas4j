@@ -12,6 +12,22 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.jasig.cas</groupId>
+			<artifactId>cas-server-support-jdbc</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.jasig.cas</groupId>
+			<artifactId>cas-server-integration-memcached</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>druid</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.jasig.cas</groupId>
+			<artifactId>cas-server-integration-memcached</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.jasig.cas</groupId>
 			<artifactId>cas-server-webapp-support</artifactId>
 			<scope>compile</scope>
 		</dependency>
