@@ -30,8 +30,6 @@
 		intervals.
 	</description>
 
-	<context:property-placeholder location="classpath:/ticket.properties" ignore-unresolvable="true" />
-
     <!-- Ticket Registry -->
     <!-- <bean id="ticketRegistry" class="org.jasig.cas.ticket.registry.DefaultTicketRegistry"/> -->
 	<bean id="ticketRegistry" class="org.jasig.cas.ticket.registry.MemCacheTicketRegistry" c:client-ref="memcachedClient"

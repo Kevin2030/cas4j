@@ -43,7 +43,6 @@
        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd"
 >
 
-	<context:property-placeholder location="classpath:/database.properties" ignore-unresolvable="true" />
     <!--
        | The authentication manager defines security policy for authentication by specifying at a minimum
        | the authentication handlers that will be used to authenticate credential. While the AuthenticationManager
@@ -145,24 +144,6 @@
 		<property name="config" ref="wall-filter-config" />
 	</bean>
 
-	<bean id="singleRowJdbcPersonAttributeDao" class="org.jasig.services.persondir.support.jdbc.SingleRowJdbcPersonAttributeDao">
-		<constructor-arg index="0" ref="dataSource" />
-		<constructor-arg index="1" value="SELECT FNUMBER,FUSERID,FMOBILE,FEMAIL FROM T_BS_USER WHERE {0}" />
-		<property name="queryAttributeMapping">
-			<map>
-				<entry key="username" value="FNUMBER" />
-			</map>
-		</property>
-		<property name="resultAttributeMapping">
-			<map>
-				<entry key="FNUMBER" value="userName" />
-				<entry key="FUSERID" value="userID" />
-				<entry key="FMOBILE" value="mobile" />
-				<entry key="FEMAIL" value="email" />
-			</map>
-		</property>
-	</bean>
-
     <!-- Required for proxy ticket mechanism -->
 	<bean id="proxyPrincipalResolver" class="org.jasig.cas.authentication.principal.BasicPrincipalResolver" />
 
@@ -177,6 +158,7 @@
     Bean that defines the attributes that a service may return.  This example uses the Stub/Mock version.  A real implementation
     may go against a database or LDAP server.  The id should remain "attributeRepository" though.
     +-->
+    <!-- 
 	<bean id="attributeRepository" class="org.jasig.services.persondir.support.NamedStubPersonAttributeDao" p:backingMap-ref="attrRepoBackingMap" />
 
 	<util:map id="attrRepoBackingMap">
@@ -194,6 +176,42 @@
 			</list>
 		</entry>
 	</util:map>
+	 -->
+	<!--  
+	<bean id="principalResolver" class="org.jasig.cas.authentication.principal.PersonDirectoryPrincipalResolver" p:principalAttributeName="username"
+		p:attributeRepository-ref="attributeRepository" p:returnNullIfNoAttributes="true" />
+	 -->
+	<!-- 
+	<bean id="attributeRepository" class="org.jasig.services.persondir.support.StubPersonAttributeDao">
+		<property name="backingMap">
+			<map>
+				<entry key="FNUMBER" value="userName" />
+				<entry key="FUSERID" value="userID" />
+				<entry key="FMOBILE" value="mobile" />
+				<entry key="FEMAIL" value="email" />
+			</map>
+		</property>
+	</bean>
+	 -->
+
+	<bean id="attributeRepository" class="org.jasig.services.persondir.support.jdbc.SingleRowJdbcPersonAttributeDao">
+		<constructor-arg index="0" ref="dataSource" />
+		<constructor-arg index="1" value="SELECT FNUMBER,FUSERID,FMOBILE,FEMAIL FROM T_BS_USER WHERE {0}" />
+		<property name="queryAttributeMapping">
+			<map>
+				<entry key="username" value="fnumber" />
+			</map>
+		</property>
+		<property name="resultAttributeMapping">
+			<map>
+				<entry key="fnumber" value="username" />
+				<entry key="fuserid" value="userid" />
+				<entry key="fmobile" value="mobile" />
+				<entry key="femail" value="email" />
+			</map>
+		</property>
+	</bean>
+	
 
 	<bean id="serviceRegistryDao" class="org.jasig.cas.services.JsonServiceRegistryDao" c:configDirectory="${service.registry.config.location:classpath:services}" />
 

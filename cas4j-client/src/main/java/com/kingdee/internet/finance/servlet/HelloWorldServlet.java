@@ -17,12 +17,14 @@ public class HelloWorldServlet extends HttpServlet {
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		String message = "<h1>Hello World!!!</h1>";
+	String message = "<h1>Hello World!!!</h1>";
 		Writer writer = resp.getWriter();
 		AttributePrincipal principal = (AttributePrincipal) req.getUserPrincipal();
 		Map<String, Object> attributes = principal.getAttributes();
-		Object userID = attributes.get("userID");
-		Object userName = attributes.get("userName");
+		Object userID = attributes.get("userid");
+		Object userName = attributes.get("username");
+		message += "<h2>name: " + principal.getName() + "</h2>";
+		message += "<h2>attributes: " + attributes + "</h2>";
 		message += "<h2>userID: " + userID + "</h2>";
 		message += "<h2>userName: " + userName + "</h2>";
 		writer.write(message);
